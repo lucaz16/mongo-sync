@@ -104,7 +104,10 @@ function load_configs {
 
     # Loads:
     # - $local_db
+    # - $local_host_url
     # - $local_host_port
+    # - $local_access_username
+    # - $local_access_password
     # - $remote_db
     # - $remote_host_url
     # - $remote_host_port
@@ -162,7 +165,12 @@ function push {
     load_configs
 
     echo "Dumping Local DB to $TMPDIR... "
-    mongodump -d "$local_db" --port "$local_host_port" -o "$TMPDIR" > /dev/null
+    mongodump \
+        -h "$local_host_url":"$local_host_port" \
+        -d "$local_db" \
+        -u "$local_access_username" \
+        -p "$local_access_password" \
+        -o "$TMPDIR" > /dev/null
     success_msg
 
     echo "Overwriting Remote DB with Dump... "
